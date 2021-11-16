@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "conf.dbType",
+      "type": "java.lang.String",
+      "description": "Description for conf.dbType."
+  }
+] }
