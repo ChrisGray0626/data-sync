@@ -1,10 +1,10 @@
 package pers.chris.core.service;
 
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.JobConfDO;
 
 public interface ValueFilterService {
 
-    void init(JobConf jobConf);
+    void init(JobConfDO jobConf);
 
     String run();
 

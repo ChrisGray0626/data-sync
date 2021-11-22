@@ -2,11 +2,11 @@ package pers.chris.core.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.JobConfDO;
 
 @Repository
-public interface JobConfRepo extends JpaRepository<JobConf, String> {
+public interface JobConfRepo extends JpaRepository<JobConfDO, String> {
 
-    JobConf findByJobId(String jobId);
+    JobConfDO findByJobId(String jobId);
 
 }

@@ -1,14 +1,14 @@
 package pers.chris.core.service;
 
-import pers.chris.core.common.SyncDataSet;
-import pers.chris.core.common.typeEnum.FieldTypeEnum;
-import pers.chris.core.model.JobConf;
+import pers.chris.common.SyncDataSet;
+import pers.chris.common.typeEnum.FieldTypeEnum;
+import pers.chris.core.model.JobConfDO;
 
 import java.util.Map;
 
 public interface ReadService {
 
-    void init(JobConf jobConf);
+    void init(JobConfDO jobConf);
 
     void run(SyncDataSet syncDataSet);
 

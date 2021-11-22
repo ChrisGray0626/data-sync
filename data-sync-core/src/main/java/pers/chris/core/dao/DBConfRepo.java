@@ -2,11 +2,11 @@ package pers.chris.core.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pers.chris.core.model.DBConf;
+import pers.chris.core.model.DBConfDO;
 
 @Repository
-public interface DBConfRepo extends JpaRepository<DBConf, String> {
+public interface DBConfRepo extends JpaRepository<DBConfDO, String> {
 
-    DBConf findByDbId(String dbId);
+    DBConfDO findByDbId(String dbId);
 
 }

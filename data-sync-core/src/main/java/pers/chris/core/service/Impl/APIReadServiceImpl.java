@@ -15,16 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pers.chris.core.common.SyncDataSet;
-import pers.chris.core.common.typeEnum.DataSourceTypeEnum;
-import pers.chris.core.common.typeEnum.FieldTypeEnum;
+import pers.chris.common.SyncDataSet;
+import pers.chris.common.typeEnum.DataSourceTypeEnum;
+import pers.chris.common.typeEnum.FieldTypeEnum;
 import pers.chris.common.plugin.ResponseParsePluginable;
 import pers.chris.core.service.PluginService;
 import pers.chris.core.service.ReadService;
 import pers.chris.core.service.ValueFilterService;
-import pers.chris.core.model.APIConf;
-import pers.chris.core.model.JobConf;
-import pers.chris.core.dao.APIRepo;
+import pers.chris.core.model.APIConfDO;
+import pers.chris.core.model.JobConfDO;
+import pers.chris.core.dao.APIConfRepo;
 
 import java.net.URI;
 import java.util.*;
@@ -33,13 +33,13 @@ import java.util.*;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class APIReadServiceImpl implements ReadService {
 
-    private APIConf APIConf;
+    private APIConfDO APIConf;
     private Map<String, FieldTypeEnum> fields;
     private ResponseParsePluginable responseParsePluginable;
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(APIReadServiceImpl.class);
     @Autowired
-    private APIRepo APIRepo;
+    private APIConfRepo APIConfRepo;
     @Autowired
     @Qualifier(DataSourceTypeEnum.API + "ValueFilter")
     private ValueFilterService valueFilterService;
@@ -47,9 +47,9 @@ public class APIReadServiceImpl implements ReadService {
     private PluginService pluginService;
 
     @Override
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         fields = new LinkedHashMap<>();
-        APIConf = APIRepo.findByAPIId(jobConf.srcConfId);
+        APIConf = APIConfRepo.findByApiId(jobConf.srcConfId);
 
         valueFilterService.init(jobConf);
         pluginService.init(APIConf.pluginId);

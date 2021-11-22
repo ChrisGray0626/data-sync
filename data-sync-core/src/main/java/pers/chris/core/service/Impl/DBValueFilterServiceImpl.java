@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import pers.chris.common.typeEnum.DataSourceTypeEnum;
+import pers.chris.common.typeEnum.SyncTypeEnum;
+import pers.chris.core.model.ValueFilterConfDO;
 import pers.chris.core.filter.ValueFilterUnit;
-import pers.chris.core.common.typeEnum.DataSourceTypeEnum;
-import pers.chris.core.common.typeEnum.SyncTypeEnum;
-import pers.chris.core.model.ValueFilterConf;
 import pers.chris.core.service.ValueFilterService;
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.JobConfDO;
 import pers.chris.core.dao.ValueFilterConfRepo;
-import pers.chris.core.util.TimeUtil;
+import pers.chris.common.util.TimeUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,11 +32,11 @@ public class DBValueFilterServiceImpl implements ValueFilterService {
     private ValueFilterConfRepo valueFilterConfRepo;
 
     @Override
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         valueFilterUnits = new LinkedList<>();
-        List<ValueFilterConf> valueFilterConfs = valueFilterConfRepo.findByJobId(jobConf.jobId);
+        List<ValueFilterConfDO> valueFilterConfs = valueFilterConfRepo.findByJobId(jobConf.jobId);
 
-        for (ValueFilterConf valueFilterConf : valueFilterConfs) {
+        for (ValueFilterConfDO valueFilterConf : valueFilterConfs) {
             ValueFilterUnit valueFilterUnit = new ValueFilterUnit(valueFilterConf.rule);
             valueFilterUnits.add(valueFilterUnit);
         }

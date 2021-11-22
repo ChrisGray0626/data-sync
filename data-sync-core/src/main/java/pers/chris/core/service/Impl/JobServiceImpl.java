@@ -7,21 +7,21 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pers.chris.core.common.SyncDataSet;
-import pers.chris.core.common.typeEnum.SyncTypeEnum;
+import pers.chris.common.SyncDataSet;
+import pers.chris.common.typeEnum.SyncTypeEnum;
 import pers.chris.core.factory.ReadServiceFactory;
 import pers.chris.core.service.FieldMapService;
 import pers.chris.core.service.JobService;
 import pers.chris.core.service.ReadService;
 import pers.chris.core.service.WriteService;
-import pers.chris.core.model.JobConf;
-import pers.chris.core.util.TimeUtil;
+import pers.chris.core.model.JobConfDO;
+import pers.chris.common.util.TimeUtil;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class JobServiceImpl implements JobService {
 
-    private JobConf jobConf;
+    private JobConfDO jobConf;
     private ReadService readService;
     @Autowired
     private ReadServiceFactory readServiceFactory;
@@ -32,7 +32,7 @@ public class JobServiceImpl implements JobService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Override
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         this.jobConf = jobConf;
     }
 

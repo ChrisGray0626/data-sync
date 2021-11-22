@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import pers.chris.core.model.PluginConf;
+import pers.chris.core.model.PluginConfDO;
 import pers.chris.common.plugin.ResponseParsePluginable;
 import pers.chris.core.service.PluginService;
-import pers.chris.core.dao.PluginRepo;
+import pers.chris.core.dao.PluginConfRepo;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,13 +17,13 @@ import java.net.URLClassLoader;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PluginServiceImpl implements PluginService {
 
-    private PluginConf pluginConf;
+    private PluginConfDO pluginConf;
     private URLClassLoader urlClassLoader;
     @Autowired
-    private PluginRepo pluginRepo;
+    private PluginConfRepo pluginConfRepo;
 
     public void init(String pluginId) {
-        pluginConf = pluginRepo.findByPluginId(pluginId);
+        pluginConf = pluginConfRepo.findByPluginId(pluginId);
 
         try {
             urlClassLoader = new URLClassLoader(new URL[]{new URL(pluginConf.jarPath)});

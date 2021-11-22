@@ -1,10 +1,10 @@
 package pers.chris.core.service;
 
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.JobConfDO;
 
 public interface JobService {
 
-    void init(JobConf jobConf);
+    void init(JobConfDO jobConf);
 
     void run();
 

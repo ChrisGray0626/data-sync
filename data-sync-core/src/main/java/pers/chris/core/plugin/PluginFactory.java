@@ -1,7 +1,7 @@
 package pers.chris.core.plugin;
 
 import pers.chris.common.plugin.Pluginable;
-import pers.chris.core.model.PluginConf;
+import pers.chris.core.model.PluginConfDO;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,10 +9,10 @@ import java.net.URLClassLoader;
 
 public class PluginFactory {
 
-    private PluginConf pluginConf;
+    private PluginConfDO pluginConf;
     private URLClassLoader urlClassLoader;
 
-    public void init(PluginConf pluginConf) {
+    public void init(PluginConfDO pluginConf) {
         this.pluginConf = pluginConf;
 
         try {

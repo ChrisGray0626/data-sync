@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import pers.chris.core.common.SyncDataSet;
+import pers.chris.common.SyncDataSet;
+import pers.chris.common.typeEnum.FieldTypeEnum;
+import pers.chris.core.model.FieldMapConfDO;
 import pers.chris.core.mapper.FieldMapperUnit;
-import pers.chris.core.common.typeEnum.FieldTypeEnum;
-import pers.chris.core.model.FieldMapConf;
 import pers.chris.core.service.FieldMapService;
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.JobConfDO;
 import pers.chris.core.dao.FieldMapConfRepo;
-import pers.chris.core.exception.FieldMapException;
-import pers.chris.core.util.FieldUtil;
+import pers.chris.common.exception.FieldMapException;
+import pers.chris.common.util.FieldUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,11 +33,11 @@ public class FieldMapServiceImpl implements FieldMapService {
     private FieldMapConfRepo fieldMapConfRepo;
 
     @Override
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         fieldMapperUnits = new LinkedList<>();
-        List<FieldMapConf> fieldMapConfs = fieldMapConfRepo.findByJobId(jobConf.jobId);
+        List<FieldMapConfDO> fieldMapConfs = fieldMapConfRepo.findByJobId(jobConf.jobId);
 
-        for (FieldMapConf fieldMapConf: fieldMapConfs) {
+        for (FieldMapConfDO fieldMapConf: fieldMapConfs) {
             FieldMapperUnit fieldMapperUnit = new FieldMapperUnit(fieldMapConf.rule);
             fieldMapperUnits.add(fieldMapperUnit);
         }

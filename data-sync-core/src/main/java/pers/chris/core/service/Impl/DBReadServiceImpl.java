@@ -7,16 +7,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import pers.chris.core.common.SyncDataSet;
-import pers.chris.core.common.typeEnum.DataSourceTypeEnum;
-import pers.chris.core.common.typeEnum.FieldTypeEnum;
+import pers.chris.common.SyncDataSet;
+import pers.chris.common.typeEnum.DataSourceTypeEnum;
+import pers.chris.common.typeEnum.FieldTypeEnum;
 import pers.chris.core.service.ReadService;
 import pers.chris.core.service.ValueFilterService;
-import pers.chris.core.model.DBConf;
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.DBConfDO;
+import pers.chris.core.model.JobConfDO;
 import pers.chris.core.dao.DBConfRepo;
-import pers.chris.core.util.ConnectUtil;
-import pers.chris.core.util.FieldUtil;
+import pers.chris.common.util.ConnectUtil;
+import pers.chris.common.util.FieldUtil;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.Map;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DBReadServiceImpl implements ReadService {
 
-    private DBConf dbConf;
+    private DBConfDO dbConf;
     private Map<String, FieldTypeEnum> fields;
     private Connection connection;
     private static final Logger LOGGER = LoggerFactory.getLogger(DBReadServiceImpl.class);
@@ -40,7 +40,7 @@ public class DBReadServiceImpl implements ReadService {
     private ValueFilterService valueFilterService;
 
     @Override
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         valueFilterService.init(jobConf);
         dbConf = dbConfRepo.findByDbId(jobConf.srcConfId);
         connection = ConnectUtil.connect(dbConf.dbType, dbConf.getUrl(), dbConf.user, dbConf.password);

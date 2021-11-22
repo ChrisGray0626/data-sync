@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import pers.chris.core.common.typeEnum.DataSourceTypeEnum;
-import pers.chris.core.common.typeEnum.SyncTypeEnum;
+import pers.chris.common.typeEnum.DataSourceTypeEnum;
+import pers.chris.common.typeEnum.SyncTypeEnum;
 import pers.chris.core.service.ValueFilterService;
-import pers.chris.core.model.JobConf;
-import pers.chris.core.util.TimeUtil;
+import pers.chris.core.model.JobConfDO;
+import pers.chris.common.util.TimeUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,7 +24,7 @@ public class APIValueFilterServiceImpl implements ValueFilterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(APIValueFilterServiceImpl.class);
 
     @Override
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         syncType = jobConf.syncType;
         // 增量同步时需要有同步间隔、同步字段
         if (SyncTypeEnum.INCREMENTAL.equals(syncType)) {

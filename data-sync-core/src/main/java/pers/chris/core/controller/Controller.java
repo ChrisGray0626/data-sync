@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pers.chris.core.service.JobService;
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.JobConfDO;
 import pers.chris.core.dao.JobConfRepo;
 
 
@@ -22,7 +22,7 @@ public class Controller {
 
     @GetMapping("/run/{jobId}")
     public String runOne(@PathVariable("jobId") String jobId) {
-        JobConf jobConf = jobConfRepo.findByJobId(jobId);
+        JobConfDO jobConf = jobConfRepo.findByJobId(jobId);
         jobService.init(jobConf);
         jobService.run();
         // TODO return

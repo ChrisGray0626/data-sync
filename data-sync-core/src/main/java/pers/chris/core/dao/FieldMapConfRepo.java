@@ -2,13 +2,13 @@ package pers.chris.core.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pers.chris.core.model.FieldMapConf;
+import pers.chris.core.model.FieldMapConfDO;
 
 import java.util.List;
 
 @Repository
-public interface FieldMapConfRepo extends JpaRepository<FieldMapConf, String> {
+public interface FieldMapConfRepo extends JpaRepository<FieldMapConfDO, String> {
 
-    List<FieldMapConf> findByJobId(String jobId);
+    List<FieldMapConfDO> findByJobId(String jobId);
 
 }

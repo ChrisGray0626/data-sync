@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import pers.chris.core.common.SyncDataSet;
-import pers.chris.core.common.typeEnum.FieldTypeEnum;
+import pers.chris.common.SyncDataSet;
+import pers.chris.common.typeEnum.FieldTypeEnum;
 import pers.chris.core.service.WriteService;
-import pers.chris.core.model.DBConf;
-import pers.chris.core.model.JobConf;
+import pers.chris.core.model.DBConfDO;
+import pers.chris.core.model.JobConfDO;
 import pers.chris.core.dao.DBConfRepo;
-import pers.chris.core.util.ConnectUtil;
-import pers.chris.core.util.FieldUtil;
-import pers.chris.core.util.SQLGenerateUtil;
+import pers.chris.common.util.ConnectUtil;
+import pers.chris.common.util.FieldUtil;
+import pers.chris.common.util.SQLGenerateUtil;
 
 import java.sql.*;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Map;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WriteServiceImpl implements WriteService {
 
-    private DBConf dbConf;
+    private DBConfDO dbConf;
     private Map<String, FieldTypeEnum> fields;
     private Connection connection;
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteServiceImpl.class);
@@ -33,7 +33,7 @@ public class WriteServiceImpl implements WriteService {
     private DBConfRepo dbConfRepo;
 
 
-    public void init(JobConf jobConf) {
+    public void init(JobConfDO jobConf) {
         dbConf = dbConfRepo.findByDbId(jobConf.dstConfId);
         connection = ConnectUtil.connect(dbConf.dbType, dbConf.getUrl(), dbConf.user, dbConf.password);
 
