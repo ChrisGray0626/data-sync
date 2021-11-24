@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>pers.chris</groupId>
-            <artifactId>data-sync-pers.chris.job.common</artifactId>
+            <artifactId>data-sync-common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

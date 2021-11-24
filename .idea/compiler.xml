@@ -8,10 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="data-sync-plugin" />
         <module name="data-sync-common" />
-        <module name="data-sync-core" />
+        <module name="data-sync-server" />
         <module name="data-sync-job" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="data-sync-core" target="8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

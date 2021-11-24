@@ -1,47 +1,75 @@
 package pers.chris.job;
 
 import pers.chris.common.SyncDataSet;
+import pers.chris.common.exception.ExecutorNotFoundException;
 import pers.chris.common.model.*;
+import pers.chris.common.typeEnum.DataSourceTypeEnum;
+import pers.chris.common.typeEnum.ExecutorTypeEnum;
 import pers.chris.common.typeEnum.SyncTypeEnum;
-import pers.chris.job.filter.ValueFilterable;
-import pers.chris.job.mapper.FieldMappable;
 import pers.chris.common.util.TimeUtil;
-import pers.chris.job.reader.DBReader;
-import pers.chris.job.reader.Readable;
-import pers.chris.job.writer.Writeable;
+import pers.chris.job.filter.api.APIFilter;
+import pers.chris.job.filter.db.DBFilter;
+import pers.chris.job.mapper.BaseMapper;
+import pers.chris.job.mapper.Mapper;
+import pers.chris.job.reader.BaseReader;
+import pers.chris.job.reader.api.APIReader;
+import pers.chris.job.reader.db.DBReader;
+import pers.chris.job.writer.BaseWriter;
+import pers.chris.job.writer.db.DBWriter;
 
 import java.util.List;
 
 public class SyncJob {
 
-    private JobConf jobConf;
-    private Readable reader;
-    private Writeable writer;
-    private FieldMappable mapper;
+    private JobConfBO jobConf;
+    private final BaseReader reader;
+    private final BaseMapper mapper;
+    private final BaseWriter writer;
 
+    public SyncJob (JobConfBO jobConf,
+                    DataSourceConf srcConf, DataSourceConf dstConf,
+                    List<FilterConfBO> filterConfs, List<MapperConfBO> mapperConfs)
+            throws ExecutorNotFoundException{
+        this.jobConf = jobConf;
 
-    // TODO Generator
-    public SyncJob (JobConf jobConf, DBConfBO srcDBConf, DBConfBO dstDBConf,
-                    List<ValueFilterConfBO> valueFilterConfs, List<FieldMapConfBO> fieldMapConfs) {
+        switch (jobConf.srcType) {
+            case DataSourceTypeEnum.DATABASE:
+                reader = new DBReader(srcConf, new DBFilter(jobConf, filterConfs));
+                break;
+            case DataSourceTypeEnum.API:
+                reader = new APIReader(srcConf, new APIFilter(jobConf, filterConfs));
+                break;
+            default:
+                throw new ExecutorNotFoundException(ExecutorTypeEnum.Reader);
+        }
 
+        mapper = new Mapper(mapperConfs);
+
+        switch (jobConf.dstType) {
+            case DataSourceTypeEnum.DATABASE:
+                writer = new DBWriter(dstConf);
+                break;
+            default:
+                throw new ExecutorNotFoundException(ExecutorTypeEnum.Writer);
+        }
     }
 
-    public SyncJob (JobConf jobConf, APIConfBO apiConf, DBConfBO dstDBConf,
-                    List<ValueFilterConfBO> valueFilterConfs, List<FieldMapConfBO> fieldMapConfs,
-                    PluginConfBO pluginConf) {
-
-    }
-
-    public void init(JobConf jobConf) {
+    @Deprecated
+    public void init(JobConfBO jobConf) {
         this.jobConf = jobConf;
     }
 
-    public void run() {
+    private void run() {
         while (true) {
             SyncDataSet syncDataSet = new SyncDataSet();
-            reader.run(syncDataSet);
-            mapper.run(syncDataSet, reader.getFields(), writer.getFields());
-            writer.run(syncDataSet);
+            reader.setSyncDataSet(syncDataSet);
+            mapper.setSyncDataSet(syncDataSet);
+            writer.setSyncDataSet(syncDataSet);
+
+            reader.start();
+            mapper.setFields(reader.getFields(), writer.getFields());
+            mapper.start();
+            writer.start();
             // 全量同步只进行一次
             if (SyncTypeEnum.TOTAL.equals(jobConf.syncType)) {
                 break;
@@ -49,6 +77,10 @@ public class SyncJob {
 
             TimeUtil.sleep(jobConf.syncInterval);
         }
+    }
+
+    public void start() {
+        run();
     }
 
 }

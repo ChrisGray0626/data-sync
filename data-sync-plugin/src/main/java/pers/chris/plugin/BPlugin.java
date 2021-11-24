@@ -3,15 +3,13 @@ package pers.chris.plugin;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pers.chris.common.plugin.ResponseParsePluginable;
+import pers.chris.common.plugin.BaseResponseParsePlugin;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BPlugin implements ResponseParsePluginable {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+public class BPlugin extends BaseResponseParsePlugin {
 
     @Override
     public List<Map<String, String>> run(String response) {
