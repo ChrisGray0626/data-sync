@@ -1,8 +1,8 @@
-package pers.chris.job.reader;
+package pers.chris.job.base;
 
 import pers.chris.common.SyncDataSet;
-import pers.chris.common.typeEnum.FieldTypeEnum;
-import pers.chris.job.common.BaseExecutor;
+import pers.chris.common.type.FieldTypeEnum;
+import pers.chris.job.base.executor.BaseExecutor;
 
 import java.util.Map;
 
@@ -11,8 +11,6 @@ public abstract class BaseReader extends BaseExecutor {
     protected String readerType;
     protected SyncDataSet syncDataSet;
     protected Map<String, FieldTypeEnum> fields;
-
-    public abstract void run(SyncDataSet syncDataSet);
 
     protected abstract void run();
 
@@ -24,6 +22,6 @@ public abstract class BaseReader extends BaseExecutor {
 
     public Map<String, FieldTypeEnum> getFields() {
         return fields;
-    };
+    }
 
 }

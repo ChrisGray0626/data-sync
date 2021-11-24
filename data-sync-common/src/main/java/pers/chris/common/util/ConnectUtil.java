@@ -1,7 +1,6 @@
 package pers.chris.common.util;
 
-import org.apache.log4j.Logger;
-import pers.chris.common.typeEnum.DBTypeEnum;
+import pers.chris.common.type.DBTypeEnum;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,29 +12,28 @@ public class ConnectUtil {
 
     private ConnectUtil() {}
 
-    private static final Map<String, String> drivers;
-    private static final Logger logger = Logger.getLogger(ConnectUtil.class);
+    private static final Map<String, String> driverNameMap;
 
     static {
-        drivers = new HashMap<>();
-        drivers.put(DBTypeEnum.MYSQL, "com.mysql.cj.jdbc.Driver");
-        drivers.put(DBTypeEnum.POSTGRESQL, "org.postgresql.Driver");
-        drivers.put(DBTypeEnum.SQLSERVER, "com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        driverNameMap = new HashMap<>();
+        driverNameMap.put(DBTypeEnum.MYSQL, "com.mysql.cj.jdbc.Driver");
+        driverNameMap.put(DBTypeEnum.POSTGRESQL, "org.postgresql.Driver");
+        driverNameMap.put(DBTypeEnum.SQLSERVER, "com.microsoft.sqlserver.jdbc.SQLServerDriver");
     }
 
     public static synchronized Connection connect(String dbType, String url, String user, String password) {
-        String driverName = drivers.get(dbType);
+        String driverName = driverNameMap.get(dbType);
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
-            logger.error(e);
+            e.printStackTrace();
         }
 
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            logger.error(e);
+            e.printStackTrace();
         }
         return connection;
     }

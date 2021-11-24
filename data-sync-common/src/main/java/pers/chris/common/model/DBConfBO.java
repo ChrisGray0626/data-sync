@@ -3,9 +3,6 @@ package pers.chris.common.model;
 
 import pers.chris.common.util.ConnectUtil;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 public class DBConfBO extends DataSourceConf {
 

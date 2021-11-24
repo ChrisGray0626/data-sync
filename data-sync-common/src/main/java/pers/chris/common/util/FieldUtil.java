@@ -1,8 +1,7 @@
 package pers.chris.common.util;
 
-import org.apache.log4j.Logger;
-import pers.chris.common.typeEnum.FieldTypeEnum;
-import pers.chris.common.exception.FieldMapException;
+import pers.chris.common.type.FieldTypeEnum;
+import pers.chris.common.exception.MapperException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ public class FieldUtil {
     private FieldUtil() {
     }
 
-    private static final Logger logger = Logger.getLogger(FieldUtil.class);
     private static final Set<String> pointlessFields; // 记录某些数据库提供的无关字段
     private static final Map<String, FieldTypeEnum> fieldTypeMap;
 
@@ -66,47 +64,39 @@ public class FieldUtil {
                 fields.put(field, fieldTypeMap.get(type));
             }
         } catch (SQLException e) {
-            logger.error(e);
+            e.printStackTrace();
         }
         return fields;
     }
 
-    // 字段与值合并
-    public static Map<String, String> mergeFieldAndValue(List<String> fields, List<String> values) {
-        Map<String, String> data = new HashMap<>();
-        for (int i = 0; i < fields.size(); i++) {
-            data.put(fields.get(i), values.get(i));
-        }
-        return data;
-    }
-
+    // TODO Exception
     // 字段名检查
     public static void checkFieldName(List<String> dstFields, List<String> srcFields,
                                       List<String> writeFields, List<String> readFields)
-            throws FieldMapException {
+            throws MapperException {
         for (String dstField: dstFields) {
             if (!writeFields.contains(dstField)) {
-                throw new FieldMapException("DstField Error: " + dstField + " doesn't exist");
+                throw new MapperException("DstField Error: " + dstField + " doesn't exist");
             }
         }
 
         for (String srcField: srcFields) {
             if (!readFields.contains(srcField)) {
-                throw new FieldMapException("SrcField Error: " + srcField + " doesn't exist");
+                throw new MapperException("SrcField Error: " + srcField + " doesn't exist");
             }
         }
     }
 
     // 字段类型检查
     public static void checkFieldType(List<String> dstFieldNames, List<String> srcFieldNames, Map<String, FieldTypeEnum> writeFields, Map<String, FieldTypeEnum> readFields)
-            throws FieldMapException {
+            throws MapperException {
         String dstFieldName = dstFieldNames.get(0);
         String srcFieldName = srcFieldNames.get(0);
         FieldTypeEnum dstFieldType = writeFields.get(dstFieldName);
         FieldTypeEnum srcFieldType = readFields.get(srcFieldName);
 
         if (srcFieldType != dstFieldType) {
-            throw new FieldMapException("Type Error: " + srcFieldName + "'s type is not adapted to " + dstFieldName);
+            throw new MapperException("Type Error: " + srcFieldName + "'s type is not adapted to " + dstFieldName);
         }
     }
 

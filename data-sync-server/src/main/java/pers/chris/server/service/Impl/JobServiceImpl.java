@@ -4,85 +4,97 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pers.chris.common.SyncDataSet;
 import pers.chris.common.exception.ExecutorNotFoundException;
 import pers.chris.common.model.*;
-import pers.chris.common.typeEnum.DataSourceTypeEnum;
-import pers.chris.common.typeEnum.SyncTypeEnum;
-import pers.chris.job.SyncJob;
-import pers.chris.server.dao.APIConfRepo;
-import pers.chris.server.dao.DBConfRepo;
-import pers.chris.server.dao.FilterConfRepo;
-import pers.chris.server.dao.MapperConfRepo;
-import pers.chris.server.factory.ReadServiceFactory;
-import pers.chris.server.model.FilterConfDO;
-import pers.chris.server.model.MapperConfDO;
-import pers.chris.server.service.FieldMapService;
-import pers.chris.server.service.JobService;
-import pers.chris.server.service.ReadService;
-import pers.chris.server.service.WriteService;
+import pers.chris.common.type.DataSourceTypeEnum;
+import pers.chris.server.dao.*;
 import pers.chris.server.model.JobConfDO;
-import pers.chris.common.util.TimeUtil;
+import pers.chris.server.model.MapperConfDO;
+import pers.chris.server.model.FilterConfDO;
+import pers.chris.job.SyncJob;
+import pers.chris.server.service.JobService;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Service
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class JobServiceImpl implements JobService {
 
     private SyncJob syncJob;
-    private JobConfDO jobConfDO;
-    @Autowired
-    private DBConfRepo dbConfRepo;
     @Autowired
     private APIConfRepo apiConfRepo;
+    @Autowired
+    private DBConfRepo dbConfRepo;
     @Autowired
     private FilterConfRepo filterConfRepo;
     @Autowired
     private MapperConfRepo mapperConfRepo;
-    private ReadService readService;
     @Autowired
-    private ReadServiceFactory readServiceFactory;
-    @Autowired
-    private WriteService writeService;
-    @Autowired
-    private FieldMapService fieldMapService;
+    private PluginConfRepo pluginConfRepo;
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
 
-    @Override
     public void init(JobConfDO jobConfDO) {
-        this.jobConfDO = jobConfDO;
-    }
+        JobConfBO jobConf = new JobConfBO();
+        DataSourceConf srcConf = null;
+        DataSourceConf dstConf = null;
+        List<FilterConfBO> filterConfs = new LinkedList<>();
+        List<MapperConfBO> mapperConfs = new LinkedList<>();
 
-    private void initJob() {
-        readService = readServiceFactory.get(jobConfDO.srcType);
-        readService.init(jobConfDO);
-        fieldMapService.init(jobConfDO);
-        writeService.init(jobConfDO);
-    }
+        BeanUtils.copyProperties(jobConfDO, jobConf);
 
-    @Override
-//    @Async
-    public void run() {
-        initJob();
-
-        while (true) {
-            SyncDataSet syncDataSet = new SyncDataSet();
-            readService.run(syncDataSet);
-            fieldMapService.run(syncDataSet, readService.getFields(), writeService.getFields());
-            writeService.run(syncDataSet);
-            // 全量同步只进行一次
-            if (SyncTypeEnum.TOTAL.equals(jobConfDO.syncType)) {
+        switch (jobConf.srcType) {
+            case DataSourceTypeEnum.DATABASE:
+                DBConfBO dbConf = new DBConfBO();
+                BeanUtils.copyProperties(dbConfRepo.findByDbId(jobConf.srcConfId), dbConf);
+                srcConf = dbConf;
                 break;
-            }
+            case DataSourceTypeEnum.API:
+                APIConfBO apiConf = new APIConfBO();
+                PluginConfBO pluginConf = new PluginConfBO();
+                BeanUtils.copyProperties(apiConfRepo.findByApiId(jobConf.srcConfId), apiConf);
+                BeanUtils.copyProperties(pluginConfRepo.findByPluginId(apiConf.pluginId), pluginConf);
+                apiConf.responsePluginConf = pluginConf;
+                srcConf = apiConf;
+                break;
+            default:
+        }
 
-            TimeUtil.sleep(jobConfDO.syncInterval);
+        switch (jobConf.dstType) {
+            case DataSourceTypeEnum.DATABASE:
+                DBConfBO dbConf = new DBConfBO();
+                BeanUtils.copyProperties(dbConfRepo.findByDbId(jobConf.dstConfId), dbConf);
+                dstConf = dbConf;
+                break;
+            default:
+        }
+
+        for (FilterConfDO filterConfDO: filterConfRepo.findByJobId(jobConf.jobId)) {
+            FilterConfBO filterConf = new FilterConfBO();
+            BeanUtils.copyProperties(filterConfDO, filterConf);
+            filterConfs.add(filterConf);
+        }
+
+        for (MapperConfDO mapperConfDO: mapperConfRepo.findByJobId(jobConf.jobId)) {
+            MapperConfBO mapperConf = new MapperConfBO();
+            BeanUtils.copyProperties(mapperConfDO, mapperConf);
+            mapperConfs.add(mapperConf);
+        }
+
+        try {
+            syncJob = new SyncJob(jobConf, srcConf, dstConf, filterConfs, mapperConfs);
+        } catch (ExecutorNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
+    private void run() {
+        syncJob.start();
+    }
+
+    @Async
+    public void start() {
+        run();
+    }
 }

@@ -1,13 +1,11 @@
 package pers.chris.job.filter.db;
 
 
-import pers.chris.job.filter.BaseFilterUnit;
+import pers.chris.job.base.filter.BaseFilterUnit;
 
 import java.util.Map;
 
 public class DBFilterUnit extends BaseFilterUnit {
-
-    private final String rule;
 
     public DBFilterUnit(String rule) {
         this.rule = rule;

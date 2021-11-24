@@ -11,27 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pers.chris.common.model.DataSourceConf;
-import pers.chris.common.model.PluginConfBO;
-import pers.chris.common.model.FilterConfBO;
 import pers.chris.common.plugin.BaseResponseParsePlugin;
-import pers.chris.common.SyncDataSet;
 import pers.chris.common.plugin.PluginManager;
-import pers.chris.common.typeEnum.DataSourceTypeEnum;
-import pers.chris.common.typeEnum.FieldTypeEnum;
-import pers.chris.job.filter.BaseFilter;
+import pers.chris.common.type.DataSourceTypeEnum;
+import pers.chris.common.type.FieldTypeEnum;
+import pers.chris.job.base.filter.BaseFilter;
 import pers.chris.job.filter.api.APIFilter;
 import pers.chris.common.model.APIConfBO;
-import pers.chris.job.reader.BaseReader;
+import pers.chris.job.base.BaseReader;
 
 import java.net.URI;
 import java.util.*;
 
 public class APIReader extends BaseReader {
 
-    private APIConfBO apiConf;
-    private APIFilter apiFilter;
-    private BaseResponseParsePlugin responseParsePlugin;
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final APIConfBO apiConf;
+    private final APIFilter apiFilter;
+    private final BaseResponseParsePlugin responseParsePlugin;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(APIReader.class);
 
     public APIReader (DataSourceConf conf, BaseFilter filter) {
@@ -44,39 +41,13 @@ public class APIReader extends BaseReader {
         console();
     }
 
-    @Deprecated
-    public void init(APIConfBO apiConf, APIFilter apiFilter, BaseResponseParsePlugin responseParsePlugin) {
-        this.apiConf = apiConf;
-        fields = new LinkedHashMap<>();
-        this.apiFilter = apiFilter;
-        this.responseParsePlugin = responseParsePlugin;
-
-        console();
-    }
-
-    @Override
-    public void run(SyncDataSet syncDataSet) {
-        // 参数设置
-        Map<String, String> fetchParams = parseFetchParam(apiConf.paramJson);
-        // 时间过滤参数
-        fetchParams.putAll(parseFetchParam(apiFilter.run()));
-
-        List<Map<String, String>> rows = fetch(apiConf.url, fetchParams);
-        syncDataSet.setRows(rows);
-        // 接口数据字段格式统一默认为STRING
-        if (!rows.isEmpty()) {
-            fieldGenerate(rows.get(0).keySet());
-        }
-    }
-
     protected void run() {
         // 参数设置
         Map<String, String> fetchParams = parseFetchParam(apiConf.paramJson);
-        // 时间过滤参数
+        // 时间过滤参数设置
         fetchParams.putAll(parseFetchParam(apiFilter.run()));
-
-        List<Map<String, String>> rows = fetch(apiConf.url, fetchParams);
-        syncDataSet.setRows(rows);
+        // 数据拉取、解析
+        syncDataSet.setRows(responseParsePlugin.run(fetch(apiConf.url, fetchParams)));
     }
 
     public void start() {
@@ -87,7 +58,7 @@ public class APIReader extends BaseReader {
         }
     }
 
-    private List<Map<String, String>> fetch(String url, Map<String, String> params) {
+    private String fetch(String url, Map<String, String> params) {
         // Request
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         params.forEach(builder::queryParam);
@@ -98,7 +69,7 @@ public class APIReader extends BaseReader {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
         // Response
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
-        return responseParsePlugin.run(response.getBody());
+        return response.getBody();
     }
     // 参数解析创建
     private Map<String, String> parseFetchParam(String paramJson) {
@@ -106,7 +77,7 @@ public class APIReader extends BaseReader {
 
         try {
             if (!("".equals(paramJson) || paramJson == null)) {
-                params = objectMapper.readValue(paramJson, new TypeReference<Map<String, String>>() {
+                params = OBJECT_MAPPER.readValue(paramJson, new TypeReference<Map<String, String>>() {
                 });
             }
         } catch (JsonProcessingException e) {

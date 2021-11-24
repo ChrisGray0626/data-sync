@@ -1,4 +1,4 @@
-package pers.chris.job.common;
+package pers.chris.job.base.executor;
 
 import java.util.Map;
 

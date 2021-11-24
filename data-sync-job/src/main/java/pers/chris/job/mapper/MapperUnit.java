@@ -1,9 +1,7 @@
 package pers.chris.job.mapper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pers.chris.job.common.BaseUnit;
-import pers.chris.common.exception.FieldMapException;
+import pers.chris.common.exception.MapperException;
+import pers.chris.job.base.mapper.BaseMapperUnit;
 
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -14,12 +12,7 @@ import java.util.regex.Pattern;
 
 public class MapperUnit extends BaseMapperUnit {
 
-    private String rule;
-    private final List<String> dstFieldNames; // 目标字段
-    private final List<String> srcFieldNames; // 源字段
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapperUnit.class);
-
-    public MapperUnit(String rule) {
+    public MapperUnit(String rule) throws MapperException {
         this.rule = rule;
         dstFieldNames = new ArrayList<>();
         srcFieldNames = new ArrayList<>();
@@ -48,15 +41,11 @@ public class MapperUnit extends BaseMapperUnit {
         data.put(dstField, dstValue);
     }
 
-    private void checkRule() {
+    private void checkRule() throws MapperException {
         Pattern pattern = Pattern.compile("\\{.*?\\}=(([\\s\\S]*)\\{.*?\\})+");
         Matcher matcher = pattern.matcher(rule);
-        try {
-            if (!matcher.matches()) {
-                throw new FieldMapException("Rule Syntax Error: '" + rule + "' exists syntax error");
-            }
-        } catch (FieldMapException e) {
-            LOGGER.error(String.valueOf(e));
+        if (!matcher.matches()) {
+            throw new MapperException("Rule Syntax Error: '" + rule + "' exists syntax error");
         }
     }
 
@@ -77,14 +66,6 @@ public class MapperUnit extends BaseMapperUnit {
         }
         // 替换源字段内容"{SrcFieldName}"为"%s"
         rule = rule.replaceAll("\\{.*?\\}", "%s");
-    }
-
-    public String getRule() {
-        return rule;
-    }
-
-    public void setRule(String rule) {
-        this.rule = rule;
     }
 
     public List<String> getDstFieldNames() {

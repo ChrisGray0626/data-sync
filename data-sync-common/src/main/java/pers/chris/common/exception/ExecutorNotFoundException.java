@@ -1,6 +1,6 @@
 package pers.chris.common.exception;
 
-import pers.chris.common.typeEnum.ExecutorTypeEnum;
+import pers.chris.common.type.ExecutorTypeEnum;
 
 public class ExecutorNotFoundException extends Exception{
 

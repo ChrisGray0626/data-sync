@@ -6,6 +6,6 @@ public interface JobService {
 
     void init(JobConfDO jobConfDO);
 
-    void run();
+    void start();
 
 }

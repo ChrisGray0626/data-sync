@@ -1,21 +1,17 @@
 package pers.chris.job.filter.db;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pers.chris.common.typeEnum.SyncTypeEnum;
-import pers.chris.common.model.JobConfBO;
 import pers.chris.common.model.FilterConfBO;
+import pers.chris.common.model.JobConfBO;
+import pers.chris.common.type.SyncTypeEnum;
 import pers.chris.common.util.TimeUtil;
-import pers.chris.job.filter.BaseFilter;
+import pers.chris.job.base.filter.BaseFilter;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class DBFilter extends BaseFilter {
 
-    private JobConfBO jobConf;
-    private List<DBFilterUnit> filterUnits;
-    private static final Logger LOGGER = LoggerFactory.getLogger(DBFilter.class);
+    private final List<DBFilterUnit> filterUnits;
 
     public DBFilter (JobConfBO jobConf, List<FilterConfBO> filterConfs) {
         this.jobConf = jobConf;
@@ -23,16 +19,6 @@ public class DBFilter extends BaseFilter {
 
         for (FilterConfBO filterConf : filterConfs) {
             DBFilterUnit filterUnit = new DBFilterUnit(filterConf.rule);
-            filterUnits.add(filterUnit);
-        }
-    }
-
-    public void init(JobConfBO jobConf, List<FilterConfBO> filterConfs) {
-        this.jobConf = jobConf;
-        filterUnits = new LinkedList<>();
-
-        for (FilterConfBO valueFilterConf : filterConfs) {
-            DBFilterUnit filterUnit = new DBFilterUnit(valueFilterConf.rule);
             filterUnits.add(filterUnit);
         }
     }

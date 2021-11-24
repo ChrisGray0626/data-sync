@@ -1,10 +1,10 @@
 package pers.chris.job.filter.api;
 
-import pers.chris.common.typeEnum.SyncTypeEnum;
+import pers.chris.common.type.SyncTypeEnum;
 import pers.chris.common.model.JobConfBO;
 import pers.chris.common.model.FilterConfBO;
 import pers.chris.common.util.TimeUtil;
-import pers.chris.job.filter.BaseFilter;
+import pers.chris.job.base.filter.BaseFilter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,14 +12,7 @@ import java.util.List;
 
 public class APIFilter extends BaseFilter {
 
-    private JobConfBO jobConf;
-
     public APIFilter (JobConfBO jobConf, List<FilterConfBO> filterConfs) {
-        this.jobConf = jobConf;
-    }
-
-    @Override
-    public void init(JobConfBO jobConf, List<FilterConfBO> filterConfs) {
         this.jobConf = jobConf;
     }
 

@@ -1,4 +1,4 @@
-package pers.chris.common.typeEnum;
+package pers.chris.common.type;
 
 public enum FieldTypeEnum {
 
