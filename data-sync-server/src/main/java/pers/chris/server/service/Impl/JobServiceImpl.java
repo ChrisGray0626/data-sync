@@ -44,13 +44,13 @@ public class JobServiceImpl implements JobService {
 
         BeanUtils.copyProperties(jobConfDO, jobConf);
 
-        switch (jobConf.srcType) {
-            case DataSourceTypeEnum.DATABASE:
+        switch (DataSourceTypeEnum.valueOf(jobConf.srcType)) {
+            case DATABASE:
                 DBConfBO dbConf = new DBConfBO();
                 BeanUtils.copyProperties(dbConfRepo.findByDbId(jobConf.srcConfId), dbConf);
                 srcConf = dbConf;
                 break;
-            case DataSourceTypeEnum.API:
+            case API:
                 APIConfBO apiConf = new APIConfBO();
                 PluginConfBO pluginConf = new PluginConfBO();
                 BeanUtils.copyProperties(apiConfRepo.findByApiId(jobConf.srcConfId), apiConf);
@@ -61,8 +61,8 @@ public class JobServiceImpl implements JobService {
             default:
         }
 
-        switch (jobConf.dstType) {
-            case DataSourceTypeEnum.DATABASE:
+        switch (DataSourceTypeEnum.valueOf(jobConf.dstType)) {
+            case DATABASE:
                 DBConfBO dbConf = new DBConfBO();
                 BeanUtils.copyProperties(dbConfRepo.findByDbId(jobConf.dstConfId), dbConf);
                 dstConf = dbConf;

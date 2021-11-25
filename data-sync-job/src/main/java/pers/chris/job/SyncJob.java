@@ -32,11 +32,11 @@ public class SyncJob {
             throws ExecutorNotFoundException{
         this.jobConf = jobConf;
 
-        switch (jobConf.srcType) {
-            case DataSourceTypeEnum.DATABASE:
+        switch (DataSourceTypeEnum.valueOf(jobConf.srcType)) {
+            case DATABASE:
                 reader = new DBReader(srcConf, new DBFilter(jobConf, filterConfs));
                 break;
-            case DataSourceTypeEnum.API:
+            case API:
                 reader = new APIReader(srcConf, new APIFilter(jobConf, filterConfs));
                 break;
             default:
@@ -45,18 +45,13 @@ public class SyncJob {
 
         mapper = new Mapper(mapperConfs);
 
-        switch (jobConf.dstType) {
-            case DataSourceTypeEnum.DATABASE:
+        switch (DataSourceTypeEnum.valueOf(jobConf.dstType)) {
+            case DATABASE:
                 writer = new DBWriter(dstConf);
                 break;
             default:
                 throw new ExecutorNotFoundException(ExecutorTypeEnum.Writer);
         }
-    }
-
-    @Deprecated
-    public void init(JobConfBO jobConf) {
-        this.jobConf = jobConf;
     }
 
     private void run() {
@@ -71,7 +66,7 @@ public class SyncJob {
             mapper.start();
             writer.start();
             // 全量同步只进行一次
-            if (SyncTypeEnum.TOTAL.equals(jobConf.syncType)) {
+            if (SyncTypeEnum.TOTAL.equals(SyncTypeEnum.valueOf(jobConf.syncType))) {
                 break;
             }
 

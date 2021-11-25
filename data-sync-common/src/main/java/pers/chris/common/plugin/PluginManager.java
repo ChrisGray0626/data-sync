@@ -6,6 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * 插件管理器
+ */
 public class PluginManager {
 
     private final PluginConfBO pluginConf;

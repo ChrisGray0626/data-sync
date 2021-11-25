@@ -1,6 +1,6 @@
 package pers.chris.job.mapper;
 
-import pers.chris.common.exception.MapperException;
+import pers.chris.common.exception.MapRuleSyntaxException;
 import pers.chris.job.base.mapper.BaseMapperUnit;
 
 import java.util.ArrayList;
@@ -10,9 +10,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * （常规）映射器元件
+ */
 public class MapperUnit extends BaseMapperUnit {
 
-    public MapperUnit(String rule) throws MapperException {
+    public MapperUnit(String rule) throws MapRuleSyntaxException {
         this.rule = rule;
         dstFieldNames = new ArrayList<>();
         srcFieldNames = new ArrayList<>();
@@ -41,14 +44,23 @@ public class MapperUnit extends BaseMapperUnit {
         data.put(dstField, dstValue);
     }
 
-    private void checkRule() throws MapperException {
+    // TODO Exception
+
+    /**
+     * 规则检查
+     * @throws MapRuleSyntaxException 不符合规范的规则
+     */
+    private void checkRule() throws MapRuleSyntaxException {
         Pattern pattern = Pattern.compile("\\{.*?\\}=(([\\s\\S]*)\\{.*?\\})+");
         Matcher matcher = pattern.matcher(rule);
         if (!matcher.matches()) {
-            throw new MapperException("Rule Syntax Error: '" + rule + "' exists syntax error");
+            throw new MapRuleSyntaxException(rule);
         }
     }
 
+    /**
+     * 规则解析
+     */
     private void parseRule() {
         // 匹配目标字段"{DstFieldName}"
         Pattern dstPattern = Pattern.compile("(?<=\\{).*?(?=\\}=)");

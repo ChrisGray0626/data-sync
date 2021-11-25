@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 同步数据集
+ */
 public class SyncDataSet {
 
     private List<Map<String, String>> rows;

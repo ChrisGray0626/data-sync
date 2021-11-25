@@ -9,6 +9,9 @@ import pers.chris.job.base.filter.BaseFilter;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 数据库过滤器
+ */
 public class DBFilter extends BaseFilter {
 
     private final List<DBFilterUnit> filterUnits;
@@ -27,12 +30,17 @@ public class DBFilter extends BaseFilter {
         return parseRule();
     }
 
+    /**
+     * 规则解析
+     * 解析为sql语句
+     * @return statement sql语句
+     */
     private String parseRule() {
         StringBuilder sql = new StringBuilder();
 
         sql.append(" where ");
-        // 增量同步时，需要有第0条规则,时间过滤
-        if (jobConf.syncType.equals(SyncTypeEnum.INCREMENTAL)) {
+        // 增量同步时，需要有第0条规则——时间过滤
+        if (SyncTypeEnum.INCREMENTAL.equals(SyncTypeEnum.valueOf(jobConf.syncType))) {
             sql.append(timedFilterRule())
                     .append(" and ");
         }
@@ -44,7 +52,12 @@ public class DBFilter extends BaseFilter {
         // 删除最后一个" and "
         return sql.toString().replaceAll("( and )$", "");
     }
-    // 时间过滤
+
+    /**
+     * 时间过滤
+     * 数据库的时间过滤一般以sql的where语句的形式实现
+     * @return statement sql语句
+     */
     private String timedFilterRule() {
         return jobConf.syncFieldName
                 + ">='" + TimeUtil.intervalTime(jobConf.syncInterval) + "'";

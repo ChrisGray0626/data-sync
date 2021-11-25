@@ -17,6 +17,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 数据库读取器
+ */
 public class DBReader extends BaseReader {
 
     private final DBConfBO dbConf;
@@ -45,6 +48,10 @@ public class DBReader extends BaseReader {
         run();
     }
 
+    /**
+     * 数据读取
+     * 使用sql的select语句进行数据读取
+     */
     private void read() {
         List<Map<String, String>> rows = new LinkedList<>();
 
@@ -69,6 +76,10 @@ public class DBReader extends BaseReader {
         syncDataSet.setRows(rows);
     }
 
+    /**
+     * 字段读取
+     * 使用sql的元数据模块 DatabaseMetaData 提前进行字段的读取
+     */
     private void readField() {
         try {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -80,7 +91,7 @@ public class DBReader extends BaseReader {
     }
 
     private void console() {
-        LOGGER.info("ReaderConf: " + dbConf.toString());
+        LOGGER.info(readerType + ": " + dbConf.toString());
     }
 
 }

@@ -13,6 +13,9 @@ import pers.chris.job.base.BaseWriter;
 import java.sql.*;
 import java.util.Map;
 
+/**
+ * 数据库写入器
+ */
 public class DBWriter extends BaseWriter {
 
     private final DBConfBO dbConf;
@@ -39,6 +42,10 @@ public class DBWriter extends BaseWriter {
         run();
     }
 
+    /**
+     * 数据写入
+     * 使用sql的insert语句进行数据写入
+     */
     private void write() {
         for (Map<String, String> row: syncDataSet.getRows()) {
             String SQL = SQLGenerateUtil.insertSQL(dbConf.tableName, row);
@@ -53,6 +60,10 @@ public class DBWriter extends BaseWriter {
         }
     }
 
+    /**
+     * 字段读取
+     * 使用sql的元数据模块 DatabaseMetaData 提前进行字段的读取
+     */
     private void readField() {
         try {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -65,7 +76,7 @@ public class DBWriter extends BaseWriter {
     }
 
     private void console() {
-        LOGGER.info("WriterConf: " + dbConf.toString());
+        LOGGER.info(writerType + ": " + dbConf.toString());
     }
 
 }

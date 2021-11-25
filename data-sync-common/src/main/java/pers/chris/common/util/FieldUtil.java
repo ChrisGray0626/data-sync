@@ -1,7 +1,8 @@
 package pers.chris.common.util;
 
+import pers.chris.common.exception.FieldNotFoundException;
+import pers.chris.common.exception.FieldTypeException;
 import pers.chris.common.type.FieldTypeEnum;
-import pers.chris.common.exception.MapperException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,30 +74,29 @@ public class FieldUtil {
     // 字段名检查
     public static void checkFieldName(List<String> dstFields, List<String> srcFields,
                                       List<String> writeFields, List<String> readFields)
-            throws MapperException {
-        for (String dstField: dstFields) {
-            if (!writeFields.contains(dstField)) {
-                throw new MapperException("DstField Error: " + dstField + " doesn't exist");
-            }
-        }
-
+            throws FieldNotFoundException {
         for (String srcField: srcFields) {
             if (!readFields.contains(srcField)) {
-                throw new MapperException("SrcField Error: " + srcField + " doesn't exist");
+                throw new FieldNotFoundException(srcField);
+            }
+        }
+        for (String dstField: dstFields) {
+            if (!writeFields.contains(dstField)) {
+                throw new FieldNotFoundException(dstField);
             }
         }
     }
 
     // 字段类型检查
     public static void checkFieldType(List<String> dstFieldNames, List<String> srcFieldNames, Map<String, FieldTypeEnum> writeFields, Map<String, FieldTypeEnum> readFields)
-            throws MapperException {
+            throws FieldTypeException {
         String dstFieldName = dstFieldNames.get(0);
         String srcFieldName = srcFieldNames.get(0);
         FieldTypeEnum dstFieldType = writeFields.get(dstFieldName);
         FieldTypeEnum srcFieldType = readFields.get(srcFieldName);
 
         if (srcFieldType != dstFieldType) {
-            throw new MapperException("Type Error: " + srcFieldName + "'s type is not adapted to " + dstFieldName);
+            throw new FieldTypeException(srcFieldName, dstFieldName);
         }
     }
 

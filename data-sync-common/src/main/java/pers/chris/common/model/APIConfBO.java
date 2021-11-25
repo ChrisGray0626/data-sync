@@ -1,10 +1,5 @@
 package pers.chris.common.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 public class APIConfBO extends DataSourceConf {
 
     public String apiId;
@@ -51,5 +46,16 @@ public class APIConfBO extends DataSourceConf {
 
     public void setResponsePluginConf(PluginConfBO responsePluginConf) {
         this.responsePluginConf = responsePluginConf;
+    }
+
+    @Override
+    public String toString() {
+        return "APIConfBO{" +
+                "apiId='" + apiId + '\'' +
+                ", url='" + url + '\'' +
+                ", paramJson='" + paramJson + '\'' +
+                ", pluginId='" + pluginId + '\'' +
+                ", responsePluginConf=" + responsePluginConf +
+                '}';
     }
 }

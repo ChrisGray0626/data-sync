@@ -23,6 +23,9 @@ import pers.chris.job.base.BaseReader;
 import java.net.URI;
 import java.util.*;
 
+/**
+ * 接口读取器
+ */
 public class APIReader extends BaseReader {
 
     private final APIConfBO apiConf;
@@ -58,6 +61,12 @@ public class APIReader extends BaseReader {
         }
     }
 
+    /**
+     * 数据拉取
+     * @param url 接口链接
+     * @param params 接口参数
+     * @return data 接口数据
+     */
     private String fetch(String url, Map<String, String> params) {
         // Request
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
@@ -71,7 +80,12 @@ public class APIReader extends BaseReader {
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
         return response.getBody();
     }
-    // 参数解析创建
+
+    /**
+     * 接口参数解析
+     * @param paramJson JSON格式的接口参数
+     * @return param Map格式的接口参数
+     */
     private Map<String, String> parseFetchParam(String paramJson) {
         Map<String, String> params = new HashMap<>();
 
@@ -85,16 +99,20 @@ public class APIReader extends BaseReader {
         }
         return params;
     }
-    // 字段生成
+
+    /**
+     * 字段生成
+     * 接口数据字段格式统一默认为STRING
+     * @param fieldNames 字段名
+     */
     private void fieldGenerate(Set<String> fieldNames) {
         for (String fieldName : fieldNames) {
-            // 接口数据字段格式统一默认为STRING
             fields.put(fieldName, FieldTypeEnum.STRING);
         }
     }
 
     private void console() {
-        LOGGER.info("APIReaderConf: " + apiConf.toString());
+        LOGGER.info(readerType + ": " + apiConf.toString());
     }
 
 }

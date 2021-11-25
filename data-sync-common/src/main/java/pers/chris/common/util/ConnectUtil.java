@@ -12,7 +12,7 @@ public class ConnectUtil {
 
     private ConnectUtil() {}
 
-    private static final Map<String, String> driverNameMap;
+    private static final Map<DBTypeEnum, String> driverNameMap;
 
     static {
         driverNameMap = new HashMap<>();
@@ -22,7 +22,7 @@ public class ConnectUtil {
     }
 
     public static synchronized Connection connect(String dbType, String url, String user, String password) {
-        String driverName = driverNameMap.get(dbType);
+        String driverName = driverNameMap.get(DBTypeEnum.valueOf(dbType));
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
