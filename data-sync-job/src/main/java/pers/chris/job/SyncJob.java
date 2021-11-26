@@ -21,15 +21,15 @@ import java.util.List;
 
 public class SyncJob {
 
-    private JobConfBO jobConf;
+    private final JobConfBO jobConf;
     private final BaseReader reader;
     private final BaseMapper mapper;
     private final BaseWriter writer;
 
-    public SyncJob (JobConfBO jobConf,
-                    DataSourceConf srcConf, DataSourceConf dstConf,
-                    List<FilterConfBO> filterConfs, List<MapperConfBO> mapperConfs)
-            throws ExecutorNotFoundException{
+    public SyncJob(JobConfBO jobConf,
+                   DataSourceConf srcConf, DataSourceConf dstConf,
+                   List<FilterConfBO> filterConfs, List<MapperConfBO> mapperConfs)
+            throws ExecutorNotFoundException {
         this.jobConf = jobConf;
 
         switch (DataSourceTypeEnum.valueOf(jobConf.srcType)) {

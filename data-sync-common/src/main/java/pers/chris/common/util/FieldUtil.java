@@ -70,7 +70,6 @@ public class FieldUtil {
         return fields;
     }
 
-    // TODO Exception
     // 字段名检查
     public static void checkFieldName(List<String> dstFields, List<String> srcFields,
                                       List<String> writeFields, List<String> readFields)

@@ -44,8 +44,6 @@ public class MapperUnit extends BaseMapperUnit {
         data.put(dstField, dstValue);
     }
 
-    // TODO Exception
-
     /**
      * 规则检查
      * @throws MapRuleSyntaxException 不符合规范的规则
